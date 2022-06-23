@@ -20,7 +20,7 @@ Works by setting the Windows Timer Resolution to 0.5 milliseconds and then creat
 // usleep(   20) -> sleeps for  0.496 milliseconds on average.
 // usleep(    5) -> sleeps for  0.488 milliseconds on average.
 // usleep(    1) -> sleeps for  0.387 milliseconds on average.
-void usleep(__int64 microseconds);
+void usleep(long long microseconds);
 ```
 
 

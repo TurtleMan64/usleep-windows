@@ -3,7 +3,14 @@
 #include <winnt.h>
 #include "usleep.h"
 
-void usleep(__int64 microseconds)
+// High resolution timer only available on Windows 10 version 1803 or later.
+#ifndef CREATE_WAITABLE_TIMER_HIGH_RESOLUTION
+#define TIMER_CREATE_FLAGS 2
+#else
+#define TIMER_CREATE_FLAGS CREATE_WAITABLE_TIMER_HIGH_RESOLUTION
+#endif
+
+void usleep(long long microseconds)
 {
     static int init = 0;
 
@@ -42,7 +49,7 @@ void usleep(__int64 microseconds)
     sleepPeriod.QuadPart = -(10*microseconds);
 
     // Create the timer, sleep until time has passed, and clean up.
-    HANDLE timer = CreateWaitableTimerEx(NULL, NULL, CREATE_WAITABLE_TIMER_HIGH_RESOLUTION, TIMER_ALL_ACCESS);
+    HANDLE timer = CreateWaitableTimerEx(NULL, NULL, TIMER_CREATE_FLAGS, TIMER_ALL_ACCESS);
     SetWaitableTimer(timer, &sleepPeriod, 0, NULL, NULL, 0);
     WaitForSingleObject(timer, INFINITE);
     CloseHandle(timer);
